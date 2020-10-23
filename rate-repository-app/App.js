@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
+  console.log('Tunnel ready.')
   return (
     <View style={styles.container}>
       <Text>Im working on the app on android device right now!</Text>
