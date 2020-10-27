@@ -1,12 +1,18 @@
 import React from 'react';
-import Main from './src/components/Main';
 import { NativeRouter } from 'react-router-native';
+import { ApolloProvider } from '@apollo/react-hooks';
+
+import Main from './src/components/Main';
+import createApolloClient from './src/utils/apolloClient';
+
+const apolloClient = createApolloClient();
 
 export default function App() {
-  console.log('Tunnel ready');
   return (
     <NativeRouter>
-      <Main />
+      <ApolloProvider client={apolloClient}>
+        <Main />
+      </ApolloProvider>
     </NativeRouter>
   );
 }
