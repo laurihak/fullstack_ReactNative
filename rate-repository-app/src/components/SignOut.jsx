@@ -5,6 +5,7 @@ import Text from './Text';
 import AuthStorageContext from '../contexts/AuthStorageContext';
 import theme from '../theme';
 import { useApolloClient } from '@apollo/react-hooks';
+import { useHistory } from 'react-router-native';
 
 const styles = StyleSheet.create({
     textSignIn: {
@@ -28,12 +29,13 @@ const SignOutButton = ({ onSubmit }) => {
 const SignOut = () => {
     const authStorage = useContext(AuthStorageContext);
     const apolloClient = useApolloClient();
+    let history = useHistory();
     const onSubmit = async () => {
         try {
-            console.log('before', authStorage);
             authStorage.removeAccessToken();
-            console.log('after', authStorage);
             apolloClient.resetStore();
+            history.push('/signIn');
+            
         } catch (e) {
             console.log(e);
         }

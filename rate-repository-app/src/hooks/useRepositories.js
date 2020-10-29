@@ -8,7 +8,10 @@ const useRepositories = () => {
   });
   if(loading) return 'loading';
 
- const repositories = data.repositories;
+  let repositories = null;
+ if(data) {
+  repositories = data.repositories;
+ }
   return  { repositories, error, loading };
 };
 

@@ -17,6 +17,7 @@ const RepositoryList = () => {
     // Get the nodes from the edges array
     if(error) return <Text>Error fetching repositories</Text>;
     if(loading) return <Text>Loading...</Text>;
+    if(!repositories) return <Text>Loading...</Text>;
     const repositoryNodes = repositories
         ? repositories.edges.map(edge => edge.node)
         : [];

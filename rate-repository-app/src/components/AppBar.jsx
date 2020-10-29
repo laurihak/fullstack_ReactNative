@@ -41,7 +41,6 @@ const styles = StyleSheet.create({
 const AppBarTab = () => {
     const userQuery = useQuery(GET_AUTHORIZED_USER, {
     });
-    console.log(userQuery.data);
     let user = null;
     if (userQuery.data) {
           user = userQuery.data.authorizedUser;
