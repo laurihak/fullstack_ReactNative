@@ -11,7 +11,7 @@ import useSignIn from '../hooks/useSignIn';
 const validationSchema = yup.object().shape({
     username: yup
         .string()
-        .min(1, 'Username must be logner than 1')
+        .min(1, 'Username must be longer than 1')
         .required('Username is required'),
     password: yup
         .string()
@@ -50,6 +50,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         minHeight: 30,
         textAlign: 'center',
+        textAlignVertical: 'center',
         color: 'white',
         fontSize: theme.fontSizes.signIn
     },
@@ -62,34 +63,38 @@ const initialValues = {
 
 
 const SignInForm = ({ onSubmit }) => {
-
     return (
         <View style={styles.formContainer}>
-            <FormikTextInput style={styles.InputItem} name='username' placeholder='Username' />
-            <FormikTextInput style={styles.InputItem} name='password' placeholder='Password' secureTextEntry={true} />
-            <TouchableWithoutFeedback onPress={onSubmit}>
+            <FormikTextInput style={styles.InputItem} testID='usernameField' name='username' placeholder='Username' />
+            <FormikTextInput style={styles.InputItem} testID='passwordField' name='password' placeholder='Password' secureTextEntry={true} />
+            <TouchableWithoutFeedback testID='submitButton' onPress={onSubmit}>
                 <Text style={styles.SignInButton}>Sign in</Text>
             </TouchableWithoutFeedback>
         </View>
     );
 };
 
+export const SignInContainer = ({ onSubmit }) => {
+    return (
+        <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
+            {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
+        </Formik>
+    );
+};
 const SignIn = () => {
     const [signIn] = useSignIn();
 
     const onSubmit = async (values) => {
         const { username, password } = values;
+        console.log('signin in', username, password);
         try {
             await signIn({ username, password });
-          } catch (e) {
-              console.log(e);
-          }
+        } catch (e) {
+            console.log(e);
+        }
     };
-
     return (
-        <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-            {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
-        </Formik>
+        <SignInContainer onSubmit={onSubmit} />
     );
 };
 

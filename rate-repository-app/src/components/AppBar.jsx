@@ -23,46 +23,51 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         // ...
     },
-    textHeadline: {
+    appBarItem: {
         marginHorizontal: 5,
         color: theme.colors.textWhite,
         fontSize: theme.fontSizes.bar,
         fontWeight: theme.fontWeights.bold
     },
-    textSignIn: {
-        marginHorizontal: 5,
-        color: theme.colors.textWhite,
-        fontSize: theme.fontSizes.bar,
-        fontWeight: theme.fontWeights.bold
-    }
     // ...
 });
 
 const AppBarTab = () => {
-    const userQuery = useQuery(GET_AUTHORIZED_USER, {
+    const { data, error, loading } = useQuery(GET_AUTHORIZED_USER, {
     });
     let user = null;
-    if (userQuery.data) {
-          user = userQuery.data.authorizedUser;
+    if (data) {
+        if (data.authorizedUser) {
+            user = data.authorizedUser;
+        }
     }
+    console.log(data);
+    const redirectToReviewForm = () => {
+        history.push(`/createReview`);
+    };
 
     return (
         <View style={styles.container}>{/* */}
             <ScrollView horizontal={true} style={styles.scrollView}>{/* ... */}
-                <View style={styles.textHeadline}>
+                <View>
                     <Link to='/' component={TouchableWithoutFeedback}>
-                        <Text style={styles.textHeadline}>Repositories</Text>
+                        <Text style={styles.appBarItem}>Repositories</Text>
                     </Link>
                 </View>
-
                 {!user
-                    ? <View style={styles.textSignIn}>
+                    ? null
+                    : <Link to='/createReview' component={TouchableWithoutFeedback}>
+                        <Text style={styles.appBarItem}>Create Review</Text>
+                    </Link>
+                }
+                {!user
+                    ? <View>
                         <Link to='/signin' component={TouchableWithoutFeedback}>
-                            <Text style={styles.textSignIn}>Sign In</Text>
+                            <Text style={styles.appBarItem}>Sign In</Text>
                         </Link>
                     </View>
-                    : <View style={styles.textSignIn}>
-                        <SignOut style={styles.textSignIn}></SignOut>
+                    : <View>
+                        <SignOut style={styles.appBarItem}></SignOut>
                     </View>}
             </ScrollView>
         </View >

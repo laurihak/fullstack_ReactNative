@@ -1,5 +1,10 @@
+import { Dimensions } from 'react-native';
 
 const theme = {
+    size: {
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height
+    },
     colors: {
       textPrimary: '#24292e',
       textSecondary: '#586069',

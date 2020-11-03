@@ -1,13 +1,16 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, Image, Dimensions, StyleSheet, TouchableOpacity } from 'react-native';
+import { useHistory } from 'react-router-native';
 import theme from '../theme';
 import Text from './Text';
+import * as Linking from 'expo-linking';
 
 const styles = StyleSheet.create({
     flexContainer: {
         alignItems: 'flex-start',
         backgroundColor: 'white',
         flexDirection: 'column',
+        width: Dimensions.get('window').width,
     },
     headerContainer: {
         alignItems: 'flex-start',
@@ -26,6 +29,7 @@ const styles = StyleSheet.create({
         borderColor: 'white',
         marginTop: 5,
         marginLeft: 5,
+        marginRight: 30,
     },
     infoContainer: {
         display: 'flex',
@@ -69,6 +73,27 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         textAlign: 'center',
         color: 'white',
+    },
+    githubContainer: {
+        alignSelf: 'center',
+        padding: 10,
+    },
+    githubButton: {
+        color: 'white',
+        backgroundColor: '#0066cc',
+        alignSelf: 'center',
+        paddingHorizontal: 100,
+        paddingVertical: 10,
+        borderRadius: 5,
+    },
+    reviewButton: {
+        color: 'white',
+        backgroundColor: '#0066cc',
+        alignSelf: 'center',
+        marginTop: 20,
+        paddingHorizontal: 100,
+        paddingVertical: 10,
+        borderRadius: 5,
     }
 });
 
@@ -80,32 +105,52 @@ const roundValue = (value) => {
     }
 };
 
-const RepositoryItem = ({ item }) => {
+const RepositoryItem = ({ item, infoViewBool }) => {
+    const history = useHistory();
+
+    const onClick = () => {
+        console.log('road to repository item with this id', item.id);
+        history.push(`/repositories/${item.id}`);
+    };
+    const redirectToGitHub = () => {
+        console.log('redirecting to : ', item.url);
+        Linking.openURL(item.url);
+    };
+
     return (
-        <View style={styles.flexContainer}>
-            <View style={styles.headerContainer}>
-                <Image source={{ uri: item.ownerAvatarUrl }} style={styles.image} />
-                <View style={styles.textContainer}>
-                    <Text style={styles.name}>{item.fullName}</Text>
-                    <Text style={styles.description}>{item.description}</Text>
-                    <Text style={styles.language}>{item.language}</Text>
+        <TouchableOpacity onPress={onClick}>
+            <View style={styles.flexContainer}>
+                <View style={styles.headerContainer}>
+                    <Image source={{ uri: item.ownerAvatarUrl }} style={styles.image} />
+                    <View style={styles.textContainer}>
+                        <Text style={styles.name} testID={'name'}>{item.fullName}</Text>
+                        <Text style={styles.description} testID={'description'}>{item.description}</Text>
+                        <Text style={styles.language} testID={'language'}>{item.language}</Text>
+                    </View>
+                </View>
+                <View style={styles.infoContainer}>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.infoItem} testID={'starGazerCount'}>{roundValue(item.stargazersCount)}</Text>
+                        <Text style={styles.infoItem} testID={'forksCount'}>{roundValue(item.forksCount)}</Text>
+                        <Text style={styles.infoItem} testID={'reviewCount'}>{roundValue(item.reviewCount)}</Text>
+                        <Text style={styles.infoItem} testID={'ratingAverage'}>{roundValue(item.ratingAverage)}</Text>
+                    </View>
+                    <View style={styles.infoRow}>
+                        <Text style={styles.descForItem}>Stars</Text>
+                        <Text style={styles.descForItem}>Forks</Text>
+                        <Text style={styles.descForItem}>Reviews</Text>
+                        <Text style={styles.descForItem}>Rating</Text>
+                    </View>
+                    {!infoViewBool ? null
+                        : <View style={styles.githubContainer}>
+                            <TouchableOpacity onPress={redirectToGitHub} style={styles.githubButton}>
+                                <Text style={{ color: 'white', fontSize: 20 }}>Open in Github</Text>
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
             </View>
-            <View style={styles.infoContainer}>
-                <View style={styles.infoRow}>
-                    <Text style={styles.infoItem}>{roundValue(item.stargazersCount)}</Text>
-                    <Text style={styles.infoItem}>{roundValue(item.forksCount)}</Text>
-                    <Text style={styles.infoItem}>{roundValue(item.reviewCount)}</Text>
-                    <Text style={styles.infoItem}>{roundValue(item.ratingAverage)}</Text>
-                </View>
-                <View style={styles.infoRow}>
-                    <Text style={styles.descForItem}>Stars</Text>
-                    <Text style={styles.descForItem}>Forks</Text>
-                    <Text style={styles.descForItem}>Reviews</Text>
-                    <Text style={styles.descForItem}>Rating</Text>
-                </View>
-            </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 

@@ -10,29 +10,33 @@ const styles = StyleSheet.create({
     },
 });
 
+
+export const RepositoryListContainer = ({ repositories }) => {
+    const repositoryNodes = repositories
+        ? repositories.edges.map((edge) => edge.node)
+        : [];
+
+    return (
+        <FlatList
+            data={repositoryNodes}
+            ItemSeparatorComponent={ItemSeparator}
+            renderItem={({ item }) => (
+                <RepositoryItem item={item} infoViewBool={false} />
+
+            )}
+            testID="repositoryList"
+        />
+    );
+};
+
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const RepositoryList = () => {
     const { repositories, loading, error } = useRepositories();
-    // Get the nodes from the edges array
-    if(error) return <Text>Error fetching repositories</Text>;
-    if(loading) return <Text>Loading...</Text>;
-    if(!repositories) return <Text>Loading...</Text>;
-    const repositoryNodes = repositories
-        ? repositories.edges.map(edge => edge.node)
-        : [];
-
-    return (
-        <View>
-            <FlatList
-                data={repositoryNodes}
-                ItemSeparatorComponent={ItemSeparator}
-                renderItem={({ item }) => (
-                    <RepositoryItem item={item} />
-
-                )}
-            />
-        </View>
+    if (error) return <Text>Error fetching repositories</Text>;
+    if (loading) return <Text>Loading...</Text>;
+    if (!repositories) return <Text>Loading...</Text>;
+    return (<RepositoryListContainer repositories={repositories} />
     );
 };
 
