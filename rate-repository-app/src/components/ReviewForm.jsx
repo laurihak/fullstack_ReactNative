@@ -1,22 +1,20 @@
 import React from 'react';
-import { View, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
 import theme from '../theme';
 import FormikTextInput from './FormikTextInput';
 import Text from './Text';
-import useSignIn from '../hooks/useSignIn';
 import { useHistory } from 'react-router-native';
+import useCreateReview from '../hooks/useCreateReview';
 
 const validationSchema = yup.object().shape({
-    owner: yup
+    ownerName: yup
         .string()
-        .min(1, 'Owner must be longer than 1')
         .required('Owner is required'),
-    name: yup
+    repositoryName: yup
         .string()
-        .min(5, 'Name must be longer than 5')
         .required('Name is required'),
     rating: yup
         .number()
@@ -24,10 +22,9 @@ const validationSchema = yup.object().shape({
         .min(0, 'Rating must be between 0-100')
         .max(100, 'Rating must be between 0-100')
         .required('Rating is required'),
-    review: yup
+    text: yup
         .string()
-        .min(1, 'Review must be longer than 1')
-        .optional(),
+        .max(200, 'Review must be shorter than 200')
 });
 
 const styles = StyleSheet.create({
@@ -40,7 +37,21 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         backgroundColor: 'white',
     },
-    InputItem: {
+    inputItem: {
+        margin: 5,
+        marginTop: 10,
+        fontSize: theme.fontSizes.signIn,
+        backgroundColor: 'white',
+        borderRadius: 5,
+        borderColor: 'black',
+        borderWidth: 2,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
+        minWidth: 250,
+        textAlign: 'left',
+        textAlignVertical: 'center'
+    },
+    descriptionText: {
         margin: 5,
         marginTop: 10,
         fontSize: theme.fontSizes.signIn,
@@ -54,7 +65,7 @@ const styles = StyleSheet.create({
         textAlign: 'left',
         textAlignVertical: 'top'
     },
-    SignInButton: {
+    createReviewButton: {
         paddingHorizontal: 5,
         textAlignVertical: 'center',
         margin: 5,
@@ -81,46 +92,48 @@ const styles = StyleSheet.create({
 });
 
 const initialValues = {
-    username: '',
-    password: ''
+    ownerName: '',
+    repositoryName: '',
+    text: ''
 };
 
-const ReviewForm = ({ onSubmit, onCancel }) => {
+const ReviewForm = ({ onSubmit }) => {
     return (
         <View style={styles.formContainer}>
-            <FormikTextInput style={styles.InputItem} testID='owner' name='owner' placeholder='Repository Owner' />
-            <FormikTextInput style={styles.InputItem} testID='name' name='name' placeholder='Repositorys Name' />
-            <FormikTextInput style={styles.InputItem} testID='rating' name='rating' placeholder='Rating' />
-            <FormikTextInput style={styles.InputItem} testID='review' name='review' placeholder='Review' multiline={true} />
-            <TouchableWithoutFeedback testID='submitButton' onPress={onSubmit}>
-                <Text style={styles.SignInButton}>Create Review</Text>
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback testID='cancelButton' onPress={onCancel}>
+            <FormikTextInput style={styles.inputItem} testID='owner' name='ownerName' placeholder='Repository Owner' />
+            <FormikTextInput style={styles.inputItem} testID='name' name='repositoryName' placeholder='Repositorys Name' />
+            <FormikTextInput style={styles.inputItem} testID='rating' name='rating' placeholder='Rating' />
+            <FormikTextInput style={styles.descriptionText} testID='review' name='text' placeholder='Review' multiline={true} />
+            <TouchableOpacity testID='createReview' onPress={onSubmit}>
+                <Text style={styles.createReviewButton}>Create Review</Text>
+            </TouchableOpacity>
+            <TouchableOpacity testID='cancelReview'>
                 <Text style={styles.cancelButton}>Cancel</Text>
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
         </View>
     );
 };
 
-export const ReviewFormContainer = ({ onSubmit, onCancel }) => {
+export const ReviewFormContainer = ({ onSubmit }) => {
     return (
         <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-            {({ handleSubmit }) => <ReviewForm onSubmit={handleSubmit} onCancel={onCancel} />}
+            {({ handleSubmit }) => <ReviewForm onSubmit={handleSubmit} />}
         </Formik>
     );
 };
 const CreateReview = () => {
     const history = useHistory();
-    const [signIn] = useSignIn();
+    const [createReview] = useCreateReview();
 
     const onSubmit = async (values) => {
-        const { username, password } = values;
+        const { rating, repositoryName, ownerName, text } = values;
         try {
-            await signIn({ username, password });
+            await createReview({ rating, repositoryName, ownerName, text });
         } catch (e) {
             console.log(e);
         }
     };
+
     const onCancel = () => {
         history.goBack();
     };

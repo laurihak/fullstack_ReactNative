@@ -108,15 +108,45 @@ const roundValue = (value) => {
 const RepositoryItem = ({ item, infoViewBool }) => {
     const history = useHistory();
 
+    if(!item)return null;
     const onClick = () => {
-        console.log('road to repository item with this id', item.id);
         history.push(`/repositories/${item.id}`);
     };
     const redirectToGitHub = () => {
-        console.log('redirecting to : ', item.url);
         Linking.openURL(item.url);
     };
 
+    if (infoViewBool) return (
+        <View style={styles.flexContainer}>
+            <View style={styles.headerContainer}>
+                <Image source={{ uri: item.ownerAvatarUrl }} style={styles.image} />
+                <View style={styles.textContainer}>
+                    <Text style={styles.name} testID={'name'}>{item.fullName}</Text>
+                    <Text style={styles.description} testID={'description'}>{item.description}</Text>
+                    <Text style={styles.language} testID={'language'}>{item.language}</Text>
+                </View>
+            </View>
+            <View style={styles.infoContainer}>
+                <View style={styles.infoRow}>
+                    <Text style={styles.infoItem} testID={'starGazerCount'}>{roundValue(item.stargazersCount)}</Text>
+                    <Text style={styles.infoItem} testID={'forksCount'}>{roundValue(item.forksCount)}</Text>
+                    <Text style={styles.infoItem} testID={'reviewCount'}>{roundValue(item.reviewCount)}</Text>
+                    <Text style={styles.infoItem} testID={'ratingAverage'}>{roundValue(item.ratingAverage)}</Text>
+                </View>
+                <View style={styles.infoRow}>
+                    <Text style={styles.descForItem}>Stars</Text>
+                    <Text style={styles.descForItem}>Forks</Text>
+                    <Text style={styles.descForItem}>Reviews</Text>
+                    <Text style={styles.descForItem}>Rating</Text>
+                </View>
+                <View style={styles.githubContainer}>
+                    <TouchableOpacity onPress={redirectToGitHub} style={styles.githubButton}>
+                        <Text style={{ color: 'white', fontSize: 20 }}>Open in Github</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
+    );
     return (
         <TouchableOpacity onPress={onClick}>
             <View style={styles.flexContainer}>
@@ -141,17 +171,12 @@ const RepositoryItem = ({ item, infoViewBool }) => {
                         <Text style={styles.descForItem}>Reviews</Text>
                         <Text style={styles.descForItem}>Rating</Text>
                     </View>
-                    {!infoViewBool ? null
-                        : <View style={styles.githubContainer}>
-                            <TouchableOpacity onPress={redirectToGitHub} style={styles.githubButton}>
-                                <Text style={{ color: 'white', fontSize: 20 }}>Open in Github</Text>
-                            </TouchableOpacity>
-                        </View>
-                    }
                 </View>
             </View>
         </TouchableOpacity>
     );
 };
+
+
 
 export default RepositoryItem;

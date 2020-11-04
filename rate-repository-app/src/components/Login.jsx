@@ -6,7 +6,7 @@ import * as yup from 'yup';
 import theme from '../theme';
 import FormikTextInput from './FormikTextInput';
 import Text from './Text';
-import useSignIn from '../hooks/useSignIn';
+import useLogin from '../hooks/useLogIn';
 
 const validationSchema = yup.object().shape({
     username: yup
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         backgroundColor: 'white',
     },
-    InputItem: {
+    inputItem: {
         margin: 5,
         marginTop: 10,
         fontSize: theme.fontSizes.signIn,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         minWidth: 250,
         textAlign: 'left',
     },
-    SignInButton: {
+    loginButton: {
         paddingHorizontal: 5,
         margin: 5,
         backgroundColor: '#0066cc',
@@ -62,40 +62,39 @@ const initialValues = {
 };
 
 
-const SignInForm = ({ onSubmit }) => {
+const LoginForm = ({ onSubmit }) => {
     return (
         <View style={styles.formContainer}>
-            <FormikTextInput style={styles.InputItem} testID='usernameField' name='username' placeholder='Username' />
-            <FormikTextInput style={styles.InputItem} testID='passwordField' name='password' placeholder='Password' secureTextEntry={true} />
+            <FormikTextInput style={styles.inputItem} testID='usernameField' name='username' placeholder='Username' />
+            <FormikTextInput style={styles.inputItem} testID='passwordField' name='password' placeholder='Password' secureTextEntry={true} />
             <TouchableWithoutFeedback testID='submitButton' onPress={onSubmit}>
-                <Text style={styles.SignInButton}>Sign in</Text>
+                <Text style={styles.loginButton}>Login</Text>
             </TouchableWithoutFeedback>
         </View>
     );
 };
 
-export const SignInContainer = ({ onSubmit }) => {
+export const LoginContainer = ({ onSubmit }) => {
     return (
         <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-            {({ handleSubmit }) => <SignInForm onSubmit={handleSubmit} />}
+            {({ handleSubmit }) => <LoginForm onSubmit={handleSubmit} />}
         </Formik>
     );
 };
-const SignIn = () => {
-    const [signIn] = useSignIn();
+const Login = () => {
+    const [login] = useLogin();
 
     const onSubmit = async (values) => {
         const { username, password } = values;
-        console.log('signin in', username, password);
         try {
-            await signIn({ username, password });
+            await login({ username, password });
         } catch (e) {
             console.log(e);
         }
     };
     return (
-        <SignInContainer onSubmit={onSubmit} />
+        <LoginContainer onSubmit={onSubmit} />
     );
 };
 
-export default SignIn;
+export default Login;

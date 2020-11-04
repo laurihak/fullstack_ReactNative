@@ -31,14 +31,16 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepository = () => {
     const { id } = useParams();
-    const { repository, loading, error } = useSingleRepository(id);
+    const { data, loading, error } = useSingleRepository(id);
 
     if (loading) return (<Text>loading...</Text>);
     if (error) return (<Text>error...</Text>);
 
     let reviews = null;
-    if (repository) {
-        reviews = repository.reviews;
+    let repository = null;
+    if (data.repository) {
+        reviews = data.repository.reviews;
+        repository = data.repository;
     }
     const reviewNodes = reviews
         ? reviews.edges.map((edge) => edge.node)

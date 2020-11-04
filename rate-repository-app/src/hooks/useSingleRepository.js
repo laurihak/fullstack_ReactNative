@@ -9,11 +9,6 @@ const useSingleRepository = (id) => {
     fetchPolicy: 'cache-and-network',
     // Other options
   });
-
-  let repository = null;
-  if (data) {
-    repository = data.repository;
-  }
-  return { repository, error, loading };
+  return { data, error, loading };
 };
 export default useSingleRepository;

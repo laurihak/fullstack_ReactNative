@@ -3,10 +3,9 @@ import { View, StyleSheet, Text, TouchableWithoutFeedback, ScrollView } from 're
 import Constants from 'expo-constants';
 import theme from '../theme';
 import { Link } from 'react-router-native';
-import { useQuery } from '@apollo/react-hooks';
-import SignOut from './SignOut';
+import LogOut from './LogOut';
 
-import { GET_AUTHORIZED_USER } from '../graphql/queries';
+import useAuthorizedUser from '../hooks/useAuthorizedUser';
 
 const styles = StyleSheet.create({
     container: {
@@ -33,18 +32,7 @@ const styles = StyleSheet.create({
 });
 
 const AppBarTab = () => {
-    const { data, error, loading } = useQuery(GET_AUTHORIZED_USER, {
-    });
-    let user = null;
-    if (data) {
-        if (data.authorizedUser) {
-            user = data.authorizedUser;
-        }
-    }
-    console.log(data);
-    const redirectToReviewForm = () => {
-        history.push(`/createReview`);
-    };
+    const user = useAuthorizedUser();
 
     return (
         <View style={styles.container}>{/* */}
@@ -62,13 +50,19 @@ const AppBarTab = () => {
                 }
                 {!user
                     ? <View>
-                        <Link to='/signin' component={TouchableWithoutFeedback}>
-                            <Text style={styles.appBarItem}>Sign In</Text>
+                        <Link to='/login' component={TouchableWithoutFeedback}>
+                            <Text style={styles.appBarItem}>Login</Text>
                         </Link>
                     </View>
                     : <View>
-                        <SignOut style={styles.appBarItem}></SignOut>
+                        <LogOut style={styles.appBarItem}></LogOut>
                     </View>}
+                {!user
+                    ? <Link to='/signup' component={TouchableWithoutFeedback}>
+                        <Text style={styles.appBarItem}>Sign Up</Text>
+                    </Link>
+                    : null
+                }
             </ScrollView>
         </View >
     );

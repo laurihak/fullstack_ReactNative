@@ -50,10 +50,7 @@ const styles = StyleSheet.create({
 
 const ReviewItem = ({ review }) => {
     const user = review.user;
-    console.log('review should be here', review);
-
     const date = format(new Date(review.createdAt), 'dd.MM.yyyy');
-    console.log('date', date);
     return (
         <View style={styles.flexContainer}>
             <View style={styles.headerContainer}>

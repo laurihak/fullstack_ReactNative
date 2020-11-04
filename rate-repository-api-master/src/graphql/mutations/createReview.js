@@ -59,7 +59,6 @@ export const resolvers = {
       { models: { Repository, Review }, githubClient, authService },
     ) => {
       const userId = authService.assertIsAuthorized();
-
       const normalizedReview = await createReviewInputSchema.validate(
         args.review,
         {

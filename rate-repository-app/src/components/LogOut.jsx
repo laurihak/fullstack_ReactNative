@@ -8,7 +8,7 @@ import { useApolloClient } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-native';
 
 const styles = StyleSheet.create({
-    textSignIn: {
+    textLogOut: {
         marginHorizontal: 5,
         color: theme.colors.textWhite,
         fontSize: theme.fontSizes.bar,
@@ -17,16 +17,16 @@ const styles = StyleSheet.create({
     // ...
 });
 
-const SignOutButton = ({ onSubmit }) => {
+const LogOutButton = ({ onSubmit }) => {
 
     return (
         <TouchableWithoutFeedback onPress={onSubmit}>
-            <Text style={styles.textSignIn}>Sign Out</Text>
+            <Text style={styles.textLogOut}>Log Out</Text>
         </TouchableWithoutFeedback>
     );
 };
 
-const SignOut = () => {
+const LogOut = () => {
     const authStorage = useContext(AuthStorageContext);
     const apolloClient = useApolloClient();
     let history = useHistory();
@@ -34,7 +34,7 @@ const SignOut = () => {
         try {
             authStorage.removeAccessToken();
             apolloClient.resetStore();
-            history.push('/signIn');
+            history.push('/login');
             
         } catch (e) {
             console.log(e);
@@ -42,8 +42,8 @@ const SignOut = () => {
     };
 
     return (
-        <SignOutButton onSubmit={onSubmit}></SignOutButton>
+        <LogOutButton onSubmit={onSubmit}></LogOutButton>
     );
 };
 
-export default SignOut;
+export default LogOut;
