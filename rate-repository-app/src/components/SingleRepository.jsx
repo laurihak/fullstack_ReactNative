@@ -3,8 +3,9 @@ import { FlatList, View, StyleSheet } from 'react-native';
 import RepositoryItem from './RepositoryItem';
 import { useParams } from 'react-router-native';
 import ReviewItem from './ReviewItem';
-import Text from './Text';
 import useSingleRepository from '../hooks/useSingleRepository';
+import Text from './Text';
+
 import theme from '../theme';
 
 const styles = StyleSheet.create({
@@ -31,29 +32,29 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepository = () => {
     const { id } = useParams();
-    const { data, loading, error } = useSingleRepository(id);
-
-    if (loading) return (<Text>loading...</Text>);
-    if (error) return (<Text>error...</Text>);
-
-    let reviews = null;
-    let repository = null;
-    if (data.repository) {
-        reviews = data.repository.reviews;
-        repository = data.repository;
+    const { repository, loading, fetchMore } = useSingleRepository({ id: id, first: 2 });
+    if (loading) {
+        setTimeout(() => {
+            return <Text>Loading...</Text>;
+        }, 3000);
     }
-    const reviewNodes = reviews
-        ? reviews.edges.map((edge) => edge.node)
+    const onEndReach = () => {
+        fetchMore();
+    };
+    if (!repository) return (<Text>Repo not found</Text>);
+    const reviewNodes = repository.reviews
+        ? repository.reviews.edges.map((edge) => edge.node)
         : [];
-
     return (
         <FlatList style={styles.container}
             data={reviewNodes}
             ItemSeparatorComponent={ItemSeparator}
-            renderItem={({ item }) => <ReviewItem review={item} />}
+            renderItem={({ item }) => <ReviewItem review={item} showReviewer={true} />}
             keyExtractor={({ id }) => id}
             ListHeaderComponent={() => <RepositoryItem item={repository} infoViewBool={true} />}
             ListHeaderComponentStyle={styles.headerComponent}
+            onEndReached={onEndReach}
+            onEndReachedThreshold={0.5}
         // ...
         />
     );

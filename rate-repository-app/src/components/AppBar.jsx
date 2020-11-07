@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import theme from '../theme';
-import { Link } from 'react-router-native';
+import { Link, Redirect } from 'react-router-native';
 import LogOut from './LogOut';
 
 import useAuthorizedUser from '../hooks/useAuthorizedUser';
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     },
     appBarItem: {
         marginHorizontal: 5,
-        color: theme.colors.textWhite,
+        color: theme.colors.white,
         fontSize: theme.fontSizes.bar,
         fontWeight: theme.fontWeights.bold
     },
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 });
 
 const AppBarTab = () => {
-    const user = useAuthorizedUser();
+    const { user } = useAuthorizedUser({ includeReviews: false });
 
     return (
         <View style={styles.container}>{/* */}
@@ -44,8 +44,14 @@ const AppBarTab = () => {
                 </View>
                 {!user
                     ? null
-                    : <Link to='/createReview' component={TouchableWithoutFeedback}>
+                    : <Link to='/create-review' component={TouchableWithoutFeedback}>
                         <Text style={styles.appBarItem}>Create Review</Text>
+                    </Link>
+                }
+                {!user
+                    ? null
+                    : <Link to='/view-user-reviews' component={TouchableWithoutFeedback}>
+                        <Text style={styles.appBarItem}>View Reviews</Text>
                     </Link>
                 }
                 {!user
@@ -58,11 +64,12 @@ const AppBarTab = () => {
                         <LogOut style={styles.appBarItem}></LogOut>
                     </View>}
                 {!user
-                    ? <Link to='/signup' component={TouchableWithoutFeedback}>
+                    ? <Link to='/sign-up' component={TouchableWithoutFeedback}>
                         <Text style={styles.appBarItem}>Sign Up</Text>
                     </Link>
                     : null
                 }
+                <Redirect to={'/'}></Redirect>
             </ScrollView>
         </View >
     );

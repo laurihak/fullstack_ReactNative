@@ -7,12 +7,12 @@ import LogIn from './Login';
 import SignUp from './SignUp';
 import CreateReview from './ReviewForm';
 import AppBar from './AppBar';
+import UserReviewsList from './UserReviewsList';
 import theme from '../theme';
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: theme.colors.mainBackGround,
-        marginBottom: 5,
         width: theme.size.width,
         height: theme.size.height,
     },
@@ -26,14 +26,17 @@ const Main = () => {
                 <Route path="/login" exact>
                     <LogIn />
                 </Route>
-                <Route path="/signup" exact>
+                <Route path="/sign-up" exact>
                     <SignUp />
                 </Route>
                 <Route path="/repositories/:id" exact>
                     <SingleRepository />
                 </Route>
-                <Route path="/createReview" exact>
+                <Route path="/create-review" exact>
                     <CreateReview />
+                </Route>
+                <Route path="/view-user-reviews" exact>
+                    <UserReviewsList />
                 </Route>
                 <Route path="/" exact>
                     <RepositoryList />

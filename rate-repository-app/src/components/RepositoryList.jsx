@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { FlatList, View, StyleSheet } from 'react-native';
+import { Picker } from '@react-native-community/picker';
+import { Searchbar } from 'react-native-paper';
+
 import RepositoryItem from './RepositoryItem';
 import useRepositories from '../hooks/useRepositories';
 import Text from './Text';
-
-import { Picker } from '@react-native-community/picker';
-import { Searchbar } from 'react-native-paper';
 
 const styles = StyleSheet.create({
     separator: {
@@ -65,9 +65,10 @@ export class RepositoryListContainer extends React.Component {
                 ItemSeparatorComponent={ItemSeparator}
                 renderItem={({ item }) => (
                     <RepositoryItem item={item} infoViewBool={false} />
-
                 )}
                 ListHeaderComponent={this.renderHeader}
+                onEndReached={this.props.onEndReach}
+                onEndReachedThreshold={0.5}
                 testID="repositoryList"
             />
         );
@@ -78,16 +79,22 @@ const RepositoryList = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [debouncedKeyword] = useDebounce(searchKeyword, 1000);
     const order = orderBy.split('/');
-    const { repositories, loading, error } = useRepositories({ orderBy: order[0], orderDirection: order[1], searchKeyword: debouncedKeyword });
+    const { repositories, loading, fetchMore } = useRepositories({ first: 6, orderBy: order[0], orderDirection: order[1], searchKeyword: debouncedKeyword });
 
-    if (error) return <Text>Error fetching repositories</Text>;
-    if (loading) return <Text>Loading...</Text>;
+    if (loading) {
+        setTimeout(() => {
+            return <Text>Loading...</Text>;
+        }, 3000);
+    }
+    const onEndReach = () => {
+        fetchMore();
+    };
 
     const repositoryNodes = repositories
         ? repositories.edges.map((edge) => edge.node)
         : [];
 
-    return (<RepositoryListContainer repositories={repositoryNodes} orderBy={orderBy} setOrderBy={setOrderBy} searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} />
+    return (<RepositoryListContainer repositories={repositoryNodes} onEndReach={onEndReach} orderBy={orderBy} setOrderBy={setOrderBy} searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} />
     );
 };
 

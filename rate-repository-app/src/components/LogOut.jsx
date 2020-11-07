@@ -10,7 +10,7 @@ import { useHistory } from 'react-router-native';
 const styles = StyleSheet.create({
     textLogOut: {
         marginHorizontal: 5,
-        color: theme.colors.textWhite,
+        color: theme.colors.white,
         fontSize: theme.fontSizes.bar,
         fontWeight: theme.fontWeights.bold
     }

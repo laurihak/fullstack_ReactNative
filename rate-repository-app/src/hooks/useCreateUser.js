@@ -12,7 +12,6 @@ const useCreateUser = () => {
     const { data } = await mutate({ variables: { username, password } });
     if (data) {
       history.push(`/repositories/`);
-      console.log(data);
     }
   };
   return [createUser, result];

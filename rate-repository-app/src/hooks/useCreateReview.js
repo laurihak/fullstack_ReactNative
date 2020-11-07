@@ -1,4 +1,4 @@
-import { useApolloClient, useMutation } from '@apollo/react-hooks';
+import { useMutation } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-native';
 
 import { CREATE_REVIEW } from '../graphql/mutations';
@@ -12,8 +12,7 @@ const useCreateReview = () => {
     const ratingInt = parseInt(rating);
     const { data } = await mutate({ variables: { rating: ratingInt, repositoryName, ownerName, text } });
     if (data) {
-      history.push(`/repositories/${data.repositoryId}`);
-      console.log(data);
+      history.push(`/repositories/${data.createReview.repositoryId}`);
     }
   };
   return [createReview, result];
